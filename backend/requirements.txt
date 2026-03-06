@@ -1,0 +1,19 @@
+# Backend dependencies
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-dotenv==1.0.0
+gspread==6.0.0
+google-auth==2.27.0
+google-auth-oauthlib==1.2.0
+pydantic==2.5.3
+python-multipart==0.0.6
+cachetools==5.3.2
+python-jose[cryptography]==3.3.0
+google-api-python-client==2.116.0
+google-auth-httplib2==0.2.0
+aiosmtplib==3.0.1
+pg8000==1.30.3
+bcrypt==4.2.1
+PyPDF2==3.0.1
+openpyxl==3.1.5
+httpx==0.26.0

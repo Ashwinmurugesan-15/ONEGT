@@ -1,0 +1,15 @@
+export { default as Dashboard } from './Dashboard';
+export { default as Associates } from './Associates';
+export { default as Projects } from './Projects';
+export { default as Allocations } from './Allocations';
+export { default as Payroll } from './Payroll';
+export { default as Expenses } from './Expenses';
+export { default as CurrencyRates } from './CurrencyRates';
+export { default as Customers } from './Customers';
+export { default as Timesheets } from './Timesheets';
+export { default as Assets } from './Assets';
+export { SettingsLayout as Settings } from '../settings';
+export { default as Profile } from './Profile';
+export { default as SalaryStructure } from './SalaryStructure';
+export { default as OrganizationChart } from './OrganizationChart';
+export { default as Leaves } from './Leaves';

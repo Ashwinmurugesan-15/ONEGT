@@ -1,0 +1,34 @@
+1. What is React?
+A) A JavaScript library for building user interfaces
+B) A programming language
+C) A database management system
+D) An operating system
+Answer: A
+
+2. Which hook is used to manage state in a functional component?
+A) useEffect
+B) useContext
+C) useState
+D) useReducer
+Answer: C
+
+3. What does JSX stand for?
+A) JavaScript XML
+B) Java Syntax Extension
+C) JSON XML
+D) JavaScript Extension
+Answer: A
+
+4. Which method is used to update state in a class component?
+A) updateState()
+B) setState()
+C) changeState()
+D) modifyState()
+Answer: B
+
+5. What is the virtual DOM?
+A) A copy of the real DOM kept in memory
+B) A type of database
+C) A JavaScript framework
+D) A CSS preprocessor
+Answer: A

@@ -1,0 +1,63 @@
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+.eggs/
+*.egg-info/
+*.egg
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Secrets (be careful - we mount these separately)
+*.env
+.env.*
+!.env.example
+!.env.docker
+
+# Build artifacts
+dist/
+build/
+*.log
+
+# Helm (we don't need these in the Docker image)
+helm/
+
+# Temporary files
+*.tmp
+*.temp
+
+*google-credentials*.json

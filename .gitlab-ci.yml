@@ -1,0 +1,109 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  # Azure Container Registry
+  ACR_NAME: acrguhateklabs
+  ACR_LOGIN_SERVER: acrguhateklabs.azurecr.io
+  IMAGE_NAME: guhatek-onegt
+  
+  # AKS Configuration
+  AKS_CLUSTER: aks-guhatek-dev
+  AKS_RESOURCE_GROUP: rg-aks-dev
+  NAMESPACE: chrms
+  
+  # Helm Configuration
+  HELM_RELEASE: guhatek-onegt
+  HELM_CHART_PATH: ./helm/guhatek-onegt
+
+# Build and push Docker image to ACR
+build:
+  stage: build
+  image: docker:24-dind
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker info
+    # Login to Azure Container Registry
+    - echo "$ACR_PASSWORD" | docker login $ACR_LOGIN_SERVER -u $ACR_USERNAME --password-stdin
+  script:
+    # Build image with Git SHA tag and latest
+    - docker build --platform linux/amd64 -t $ACR_LOGIN_SERVER/$IMAGE_NAME:$CI_COMMIT_SHA -t $ACR_LOGIN_SERVER/$IMAGE_NAME:latest .
+    # Push both tags
+    - docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$CI_COMMIT_SHA
+    - docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
+  only:
+    - main
+    - develop
+  tags:
+    - docker
+
+# Deploy to Development (onegt-dev.guhatek.org) from develop branch
+deploy-dev:
+  stage: deploy
+  image: mcr.microsoft.com/azure-cli:latest
+  before_script:
+    # Install kubectl and helm
+    - az aks install-cli
+    - curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+    # Login to Azure
+    - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+    # Get AKS credentials
+    - az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+  script:
+    # Create namespace if not exists
+    - kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+    # Deploy with Helm
+    - |
+      helm upgrade --install $HELM_RELEASE $HELM_CHART_PATH \
+        --namespace $NAMESPACE \
+        --set image.repository=$ACR_LOGIN_SERVER/$IMAGE_NAME \
+        --set image.tag=$CI_COMMIT_SHA \
+        --set ingress.hosts[0].host=onegt-dev.guhatek.org \
+        --set ingress.tls[0].hosts[0]=onegt-dev.guhatek.org \
+        --set ingress.tls[0].secretName=dev-guhatek-org-tls \
+        --wait \
+        --timeout 5m
+    # Verify deployment
+    - kubectl rollout status deployment/$HELM_RELEASE -n $NAMESPACE
+  only:
+    - develop
+  environment:
+    name: development
+    url: https://onegt-dev.guhatek.org/chrms
+  tags:
+    - docker
+
+# Deploy to Production (chrms.guhatek.org) from main branch
+deploy-prod:
+  stage: deploy
+  image: mcr.microsoft.com/azure-cli:latest
+  before_script:
+    - az aks install-cli
+    - curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+    - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+    - az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+  script:
+    - kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+    - |
+      helm upgrade --install $HELM_RELEASE $HELM_CHART_PATH \
+        --namespace $NAMESPACE \
+        --set image.repository=$ACR_LOGIN_SERVER/$IMAGE_NAME \
+        --set image.tag=$CI_COMMIT_SHA \
+        --set ingress.hosts[0].host=thiranx.guhatek.org \
+        --set ingress.tls[0].hosts[0]=thiranx.guhatek.org \
+        --set ingress.tls[0].secretName=thiranx-guhatek-org-tls \
+        --wait \
+        --timeout 5m
+    - kubectl rollout status deployment/$HELM_RELEASE -n $NAMESPACE
+  only:
+    - main
+  environment:
+    name: production
+    url: https://thiranx.guhatek.org/chrms
+  when: manual  # Require manual approval for production
+  tags:
+    - docker

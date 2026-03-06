@@ -1,0 +1,11 @@
+export { default as CRMSDashboard } from './Dashboard';
+export { default as Leads } from './Leads';
+export { default as Opportunities } from './Opportunities';
+export { default as CRMSCustomers } from './Customers';
+export { default as Contacts } from './Contacts';
+export { default as Deals } from './Deals';
+export { default as CRMSTasks } from './Tasks';
+export { default as Calls } from './Calls';
+export { default as CRMSInvoices } from './Invoices';
+export { default as TemplateDesigner } from './TemplateDesigner';
+export { default as FinanceView } from './FinanceView';

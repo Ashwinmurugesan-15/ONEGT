@@ -1,0 +1,608 @@
+/* ─────────────────────────────────────
+   Invoice Preview & Paper Styles
+   ───────────────────────────────────── */
+.invoice-preview-container {
+    background: #525659;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.invoice-paper {
+    background: white;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    font-size: 0.875rem;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.preview-body {
+    padding: 0 8mm;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Prevent content bleed */
+}
+
+
+
+
+.footer-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.footer-wrapper img {
+    display: block;
+    max-width: 100%;
+}
+
+.footer-wrapper>*:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Normalizing editor content margins */
+.gt-wysiwyg-editor>* {
+    margin-top: 0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.gt-wysiwyg-editor hr {
+    margin: 0.25rem 0 !important;
+    border: none;
+    border-top: 1px solid #e5e7eb;
+}
+
+.gt-wysiwyg-editor p:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* ─────────────────────────────────────
+   Invoice Editor Form Layout
+   ───────────────────────────────────── */
+.invoice-editor-container {
+    max-width: 100%;
+    padding: 0;
+    background: transparent;
+}
+
+/* Sections — each group of fields in the editor */
+.ie-section {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-5) var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+}
+
+.ie-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary-700);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 var(--spacing-4) 0;
+    background: var(--primary-50);
+    border-left: 3px solid var(--primary-500);
+    padding: 0.5rem 0.875rem;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.ie-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+}
+
+.ie-section-header .ie-section-title {
+    margin-bottom: 0;
+}
+
+/* 4-column row for date / status / currency */
+.ie-row-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-1);
+}
+
+@media (max-width: 768px) {
+    .ie-row-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ─────────────────────────────────────
+   Line Items Table
+   ───────────────────────────────────── */
+.ie-table-wrap {
+    overflow-x: auto;
+}
+
+.ie-line-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.ie-line-table th {
+    background: var(--gray-50);
+    padding: 0.625rem 0.75rem;
+    text-align: left;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gray-500);
+    font-weight: 600;
+    border-bottom: 1px solid var(--gray-200);
+    white-space: nowrap;
+}
+
+.ie-line-table td {
+    padding: 0.375rem 0.5rem;
+    border-bottom: 1px solid var(--gray-100);
+    background: white;
+    vertical-align: middle;
+}
+
+.ie-line-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Transparent inputs inside the table — appear as plain text until focused */
+.ie-line-table .form-input {
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.ie-line-table .form-input:hover {
+    background: var(--gray-50);
+}
+
+.ie-line-table .form-input:focus {
+    background: white;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 2px var(--primary-50);
+}
+
+/* Amount column */
+.ie-amount-cell {
+    text-align: right;
+    padding: 0.5rem 0.75rem !important;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--gray-700);
+    white-space: nowrap;
+}
+
+/* Action column (delete button) */
+.ie-action-cell {
+    text-align: center;
+    padding: 0.5rem !important;
+}
+
+.ie-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--gray-400);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.ie-delete-btn:hover {
+    color: var(--error-600);
+    background: var(--error-50);
+}
+
+/* ─────────────────────────────────────
+   Totals Summary Box
+   ───────────────────────────────────── */
+.ie-totals-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-4);
+}
+
+.ie-totals-box {
+    width: 400px;
+    max-width: 100%;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 0.875rem 1.25rem;
+}
+
+.ie-totals-row {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    align-items: center;
+    padding: 0.4rem 0;
+    font-size: 0.875rem;
+}
+
+.ie-totals-label {
+    font-weight: 500;
+    color: var(--gray-600);
+}
+
+.ie-totals-value {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+    font-weight: 600;
+    color: var(--gray-900);
+    white-space: nowrap;
+    text-align: right;
+}
+
+.ie-totals-input-group {
+    display: grid;
+    grid-template-columns: 72px 16px 12px 1fr;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.ie-totals-input-group> :last-child {
+    justify-self: end;
+}
+
+.ie-totals-input {
+    width: 72px !important;
+    text-align: right;
+    padding: 0.3rem 0.45rem !important;
+    font-size: 0.8125rem !important;
+}
+
+.ie-totals-unit {
+    color: var(--gray-500);
+    font-size: 0.8125rem;
+    flex-shrink: 0;
+}
+
+.ie-totals-eq {
+    color: var(--gray-400);
+    flex-shrink: 0;
+}
+
+/* Grand total row */
+.ie-grand-total {
+    border-top: 2px solid var(--gray-200);
+    margin-top: 0.25rem;
+    padding-top: 0.6rem !important;
+}
+
+.ie-grand-total .ie-totals-label {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.ie-grand-total .ie-totals-value {
+    font-size: 1.0625rem;
+    font-weight: 800;
+    color: var(--primary-600);
+}
+
+/* ─────────────────────────────────────
+   Preview Modal
+   ───────────────────────────────────── */
+/* TARGET THE MAIN MODAL CONTAINER SPECFICALLY FOR INVOICES */
+.modal:has(.invoice-modal-body),
+.modal:has(.ie-loading-container),
+.modal:has(.invoice-editor-container) {
+    max-width: 860px !important;
+    width: 95% !important;
+}
+
+.invoice-modal-content {
+    background: white;
+    width: 100%;
+    height: 90vh;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2xl);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Loading Progress Bar */
+.ie-loading-container {
+    padding: 8rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background: white;
+    height: 100%;
+}
+
+.ie-progress-track {
+    width: 350px;
+    height: 8px;
+    background: var(--gray-100);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ie-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 45%;
+    background: linear-gradient(135deg, var(--primary-400) 0%, var(--primary-600) 100%);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 128, 204, 0.4);
+    animation: progressMove 1.8s infinite cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+@keyframes progressMove {
+    0% {
+        left: -45%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+.ie-loading-text {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.invoice-modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+.invoice-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    /* Reduced padding from 2rem to tighten the fit */
+    background: var(--gray-100);
+    display: flex;
+    justify-content: center;
+}
+
+/* ─────────────────────────────────────
+   Invoice Template / Preview Styles
+   ───────────────────────────────────── */
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+}
+
+.invoice-logo {
+    max-height: 60px;
+    margin-bottom: 1rem;
+}
+
+.invoice-company-info {
+    font-size: 0.875rem;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+.invoice-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color, #2563eb);
+    text-transform: uppercase;
+    text-align: right;
+}
+
+.invoice-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.bill-to-title {
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Items table (in preview) */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.items-table th {
+    text-align: left;
+    padding: 0.75rem 0.5rem;
+    font-weight: 600;
+    color: #4b5563;
+    border-bottom: 2px solid #e5e7eb;
+    font-size: 0.75rem;
+}
+
+.items-table th:first-child,
+.items-table td:first-child {
+    padding-left: 0;
+}
+
+.items-table th:last-child,
+.items-table td:last-child {
+    padding-right: 0;
+}
+
+.items-table td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+    font-size: 0.8rem;
+}
+
+/* Totals in preview */
+.totals-section {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.totals-grid {
+    width: 300px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    color: #1a1a1a;
+}
+
+.grand-total {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
+    border-top: 2px solid #e5e7eb;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+.invoice-footer {
+    margin-top: 2rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* ─────────────────────────────────────
+   Print Overrides
+   ───────────────────────────────────── */
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+        /* Let the container handle paper centering */
+    }
+
+    /* Hide all layout and UI components absolutely */
+    .sidebar,
+    .app-header,
+    .main-header,
+    .status-bar,
+    .modal-header,
+    .modal-footer,
+    .no-print {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        visibility: hidden !important;
+    }
+
+    /* Target the Invoices.jsx list view elements specifically to hide background content */
+    .p-6>*:not(.modal-overlay) {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Reset global containers to let the paper fill the space */
+    #root,
+    .app-layout,
+    .main-wrapper,
+    .main-content,
+    .modal-overlay,
+    .modal,
+    .modal-body,
+    .invoice-modal-body,
+    .invoice-editor-container,
+    .p-6 {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: white !important;
+        border: none !important;
+        display: block !important;
+        overflow: visible !important;
+        height: auto !important;
+        width: 100% !important;
+        position: static !important;
+        box-shadow: none !important;
+    }
+
+    /* Ensure the paper is the only thing rendered with correct dimensions */
+    .invoice-paper {
+        margin: 0 auto !important;
+        box-shadow: none !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        border: none !important;
+        visibility: visible !important;
+        display: flex !important;
+        flex-direction: column !important;
+        background-color: white !important;
+    }
+
+    /* Ensure specific colors/gradients print */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Force font weights for html2canvas */
+    strong,
+    b {
+        font-weight: 700 !important;
+    }
+}

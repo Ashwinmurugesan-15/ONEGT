@@ -1,0 +1,145 @@
+# Default values for guhatek-onegt
+
+replicaCount: 1
+
+image:
+  repository: acrguhateklabs.azurecr.io/guhatek-onegt
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: "guhatek-onegt"
+
+
+serviceAccount:
+  create: true
+  annotations:
+    azure.workload.identity/client-id: "c707e837-da6f-477b-9712-b01fa5849285"
+googleCredentials:
+  filename: "google-credentials-config-onegt-prod.json"
+  workloadIdentity:
+    enabled: true
+    gcpProjectNumber: "1034036271051"
+    poolId: "azure-aks-pool-prod"
+    providerId: "aks-provider-prod"
+    serviceAccountEmail: "onegt-prod@gukatek-internal.iam.gserviceaccount.com"
+    azureTokenPath: "/var/run/secrets/azure/tokens/azure-identity-token"
+
+podAnnotations: {}
+podLabels:
+  app: guhatek-onegt
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: onegt.guhatek.org
+      paths:
+        - path: /(.*)
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: onegt-guhatek-org-tls
+      hosts:
+        - onegt.guhatek.org
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Environment configuration
+env:
+  # Google Sheets Configuration
+  SPREADSHEET_ID: "1W5AVWBOsW7u5x-7-LHOw2G7CSVZC-3azgCC_VwxIr5w"
+  CRMS_SPREADSHEET_ID: "1i9t2t_bo_-ulzEgIZFDiOz-PoPJdmJSHi-pTzHvo83s"
+  DRIVE_PEOPLES_FOLDER_ID: "0AJcECZ9tnsMeUk9PVA"
+  DRIVE_TEMPLATES_FOLDER_ID: "1g4YjKRWhrnkjePRYY3ucD3d6GAhOWXgT"
+  DRIVE_EXPENSES_FOLDER_ID: "1efuBDt8oed9v3wajFcocFpj2uKDSaNdx"
+  PMS_SPREADSHEET_ID: "1CuwESu2L3dcaeu_HMTxzhNwJfc_wyfnTqAgUf4w4xmE"
+  ROOT_FOLDER_ID: "1q5lECezUrt-93Z2imEjrB0mxB3dQipta"
+  ASSOCIATES_SHEET: "Associates"
+  PROJECTS_SHEET: "Project Master"
+  ALLOCATIONS_SHEET: "Project Allocation Tracker"
+  INVOICES_SHEET: "Invoice"
+  PAYROLL_SHEET: "Payroll"
+  EXPENSES_SHEET: "Expenses"
+  CURRENCY_SHEET: "Currency Rates"
+  CUSTOMERS_SHEET: "Customers"
+  TIMESHEETS_SHEET: "Timesheets"
+  GOOGLE_CLOUD_PROJECT: "gukatek-internal"
+  LOG_LEVEL: "ERROR"
+
+  # Application Settings
+  HOST: "0.0.0.0"
+  PORT: "8000"
+  DEBUG: "false"
+  CORS_ORIGINS: "*"
+
+
+
+# Volume mounts for credentials
+volumes: []
+volumeMounts: []
+
+# ConfigMap for additional configuration
+configMap:
+  enabled: false
+  data: {}

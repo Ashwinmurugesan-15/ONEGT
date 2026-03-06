@@ -1,0 +1,17 @@
+apiVersion: v2
+name: guhatek-onegt
+description: GuhaTek - OneGT Helm Chart
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - chrms
+  - hr
+  - management
+  - fastapi
+  - react
+maintainers:
+  - name: Guhatek
+home: https://github.com/guhatek/chrms
+sources:
+  - https://github.com/guhatek/chrms

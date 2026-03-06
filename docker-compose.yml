@@ -1,0 +1,48 @@
+#version: '3.8'
+
+services:
+  guhatek-onegt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: acrguhateklabs.azurecr.io/guhatek-onegt:latest
+    platform: linux/amd64
+    container_name: guhatek-onegt
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_CREDENTIALS_FILE=/app/credentials/credentials.json
+      - SPREADSHEET_ID=${SPREADSHEET_ID}
+      - CRMS_SPREADSHEET_ID=${CRMS_SPREADSHEET_ID}
+      - ASSOCIATES_SHEET=${ASSOCIATES_SHEET:-Associates}
+      - PROJECTS_SHEET=${PROJECTS_SHEET:-Project Master}
+      - ALLOCATIONS_SHEET=${ALLOCATIONS_SHEET:-Project Allocation Tracker}
+      - INVOICES_SHEET=${INVOICES_SHEET:-Invoice}
+      - PAYROLL_SHEET=${PAYROLL_SHEET:-Payroll}
+      - EXPENSES_SHEET=${EXPENSES_SHEET:-Expenses}
+      - CURRENCY_SHEET=${CURRENCY_SHEET:-Currency}
+      - CUSTOMERS_SHEET=${CUSTOMERS_SHEET:-Customers}
+      - TIMESHEETS_SHEET=${TIMESHEETS_SHEET:-Timesheets}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=${DEBUG:-false}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:5173,http://localhost:8000}
+    volumes:
+      - ./backend/credentials.json:/app/credentials/credentials.json:ro
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - chrms-network
+    labels:
+      - "app.name=guhatek-onegt"
+      - "app.description=GuhaTek's OneGT (Customer Human Resource Management System)"
+
+networks:
+  chrms-network:
+    driver: bridge
+    name: chrms-network

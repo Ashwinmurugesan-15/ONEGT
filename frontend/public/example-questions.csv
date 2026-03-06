@@ -1,0 +1,11 @@
+Question,Option_A,Option_B,Option_C,Option_D,Answer
+"What is React?","A JavaScript library for building user interfaces","A programming language","A database management system","An operating system",A
+"Which hook is used to manage state in a functional component?","useEffect","useState","useContext","useReducer",B
+"What does JSX stand for?","JavaScript XML","Java Syntax Extension","JSON XML","JavaScript Extension",A
+"Which of the following is NOT a valid React hook?","useState","useEffect","useClass","useCallback",C
+"What is the purpose of the useEffect hook?","To manage component state","To perform side effects in functional components","To create custom hooks","To handle form submissions",B
+"In React, what is a prop?","A way to store component state","Data passed from parent to child component","A method to update the DOM","A type of React component",B
+"What command creates a new React application?","npm init react-app","npx create-react-app","npm new react","react create-app",B
+"Which method is called when a component is first mounted?","componentWillUnmount","componentDidUpdate","componentDidMount","shouldComponentUpdate",C
+"What is the virtual DOM?","A direct copy of the real DOM","A lightweight representation of the real DOM","A server-side rendering technique","A database for storing DOM elements",B
+"How do you conditionally render in React?","Using if-else statements only","Using switch statements only","Using ternary operators or logical && operators","Conditional rendering is not possible",C
